@@ -1,3 +1,3 @@
-[submodule "Libs/lwip"]
-	path = Libs/lwip
-	url = git@github.com:lwip-tcpip/lwip.git
+[submodule "libs/esp32_net"]
+	path = libs/esp32_net
+	url = git@github.com:thodoxuan392/esp32_net.git
