@@ -1,0 +1,625 @@
+ARM GAS  /tmp/cclgQ5no.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.arch armv7-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 6
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"app_debug.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.bss.huart1,"aw",%nobits
+  18              		.align	2
+  21              	huart1:
+  22 0000 00000000 		.space	68
+  22      00000000 
+  22      00000000 
+  22      00000000 
+  22      00000000 
+  23              		.section	.bss.level,"aw",%nobits
+  26              	level:
+  27 0000 00       		.space	1
+  28              		.section	.bss.log_buffer,"aw",%nobits
+  29              		.align	2
+  32              	log_buffer:
+  33 0000 00000000 		.space	1024
+  33      00000000 
+  33      00000000 
+  33      00000000 
+  33      00000000 
+  34              		.section	.bss.message_buffer,"aw",%nobits
+  35              		.align	2
+  38              	message_buffer:
+  39 0000 00000000 		.space	1024
+  39      00000000 
+  39      00000000 
+  39      00000000 
+  39      00000000 
+  40              		.section	.rodata
+  41              		.align	2
+  42              	.LC0:
+  43 0000 4F464600 		.ascii	"OFF\000"
+  44              		.align	2
+  45              	.LC1:
+  46 0004 46415441 		.ascii	"FATAL\000"
+  46      4C00
+  47 000a 0000     		.align	2
+  48              	.LC2:
+  49 000c 4552524F 		.ascii	"ERROR\000"
+  49      5200
+  50 0012 0000     		.align	2
+  51              	.LC3:
+ARM GAS  /tmp/cclgQ5no.s 			page 2
+
+
+  52 0014 5741524E 		.ascii	"WARN\000"
+  52      00
+  53 0019 000000   		.align	2
+  54              	.LC4:
+  55 001c 494E464F 		.ascii	"INFO\000"
+  55      00
+  56 0021 000000   		.align	2
+  57              	.LC5:
+  58 0024 44454255 		.ascii	"DEBUG\000"
+  58      4700
+  59 002a 0000     		.align	2
+  60              	.LC6:
+  61 002c 54524143 		.ascii	"TRACE\000"
+  61      4500
+  62 0032 0000     		.align	2
+  63              	.LC7:
+  64 0034 414C4C00 		.ascii	"ALL\000"
+  65              		.section	.text.level_to_str,"ax",%progbits
+  66              		.align	1
+  67              		.syntax unified
+  68              		.thumb
+  69              		.thumb_func
+  71              	level_to_str:
+  72              	.LFB65:
+  73              		.file 1 "Core/Src/app_debug.c"
+   1:Core/Src/app_debug.c **** #include "main.h"
+   2:Core/Src/app_debug.c **** #include "app_debug.h"
+   3:Core/Src/app_debug.c **** #include "string.h"
+   4:Core/Src/app_debug.c **** #include "stdarg.h"
+   5:Core/Src/app_debug.c **** 
+   6:Core/Src/app_debug.c **** static UART_HandleTypeDef huart1;
+   7:Core/Src/app_debug.c **** static log_level_t level;
+   8:Core/Src/app_debug.c **** static uint8_t log_buffer[MAX_LOG_BUFFER];
+   9:Core/Src/app_debug.c **** static uint8_t message_buffer[MAX_LOG_BUFFER];
+  10:Core/Src/app_debug.c **** 
+  11:Core/Src/app_debug.c **** static char * level_to_str(log_level_t level){
+  74              		.loc 1 11 46
+  75              		.cfi_startproc
+  76              		@ args = 0, pretend = 0, frame = 16
+  77              		@ frame_needed = 1, uses_anonymous_args = 0
+  78              		@ link register save eliminated.
+  79 0000 80B4     		push	{r7}
+  80              		.cfi_def_cfa_offset 4
+  81              		.cfi_offset 7, -4
+  82 0002 85B0     		sub	sp, sp, #20
+  83              		.cfi_def_cfa_offset 24
+  84 0004 00AF     		add	r7, sp, #0
+  85              		.cfi_def_cfa_register 7
+  86 0006 0346     		mov	r3, r0
+  87 0008 FB71     		strb	r3, [r7, #7]
+  12:Core/Src/app_debug.c ****     char * result;
+  13:Core/Src/app_debug.c ****     switch (level)
+  88              		.loc 1 13 5
+  89 000a FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+  90 000c 072B     		cmp	r3, #7
+  91 000e 2BD8     		bhi	.L14
+  92 0010 01A2     		adr	r2, .L4
+ARM GAS  /tmp/cclgQ5no.s 			page 3
+
+
+  93 0012 52F823F0 		ldr	pc, [r2, r3, lsl #2]
+  94 0016 00BF     		.p2align 2
+  95              	.L4:
+  96 0018 39000000 		.word	.L11+1
+  97 001c 3F000000 		.word	.L10+1
+  98 0020 45000000 		.word	.L9+1
+  99 0024 4B000000 		.word	.L8+1
+ 100 0028 51000000 		.word	.L7+1
+ 101 002c 57000000 		.word	.L6+1
+ 102 0030 5D000000 		.word	.L5+1
+ 103 0034 63000000 		.word	.L3+1
+ 104              		.p2align 1
+ 105              	.L11:
+  14:Core/Src/app_debug.c ****     {
+  15:Core/Src/app_debug.c ****     case LOG_OFF:
+  16:Core/Src/app_debug.c ****         /* code */
+  17:Core/Src/app_debug.c ****         result = "OFF";
+ 106              		.loc 1 17 16
+ 107 0038 0F4B     		ldr	r3, .L15
+ 108 003a FB60     		str	r3, [r7, #12]
+  18:Core/Src/app_debug.c ****         break;
+ 109              		.loc 1 18 9
+ 110 003c 15E0     		b	.L12
+ 111              	.L10:
+  19:Core/Src/app_debug.c ****     case LOG_FATAL:
+  20:Core/Src/app_debug.c ****         /* code */
+  21:Core/Src/app_debug.c ****         result = "FATAL";
+ 112              		.loc 1 21 16
+ 113 003e 0F4B     		ldr	r3, .L15+4
+ 114 0040 FB60     		str	r3, [r7, #12]
+  22:Core/Src/app_debug.c ****         break;
+ 115              		.loc 1 22 9
+ 116 0042 12E0     		b	.L12
+ 117              	.L9:
+  23:Core/Src/app_debug.c ****     case LOG_ERROR:
+  24:Core/Src/app_debug.c ****         /* code */
+  25:Core/Src/app_debug.c ****         result = "ERROR";
+ 118              		.loc 1 25 16
+ 119 0044 0E4B     		ldr	r3, .L15+8
+ 120 0046 FB60     		str	r3, [r7, #12]
+  26:Core/Src/app_debug.c ****         break;
+ 121              		.loc 1 26 9
+ 122 0048 0FE0     		b	.L12
+ 123              	.L8:
+  27:Core/Src/app_debug.c ****     case LOG_WARN:
+  28:Core/Src/app_debug.c ****         /* code */
+  29:Core/Src/app_debug.c ****         result = "WARN";
+ 124              		.loc 1 29 16
+ 125 004a 0E4B     		ldr	r3, .L15+12
+ 126 004c FB60     		str	r3, [r7, #12]
+  30:Core/Src/app_debug.c ****         break;
+ 127              		.loc 1 30 9
+ 128 004e 0CE0     		b	.L12
+ 129              	.L7:
+  31:Core/Src/app_debug.c ****     case LOG_INFO:
+  32:Core/Src/app_debug.c ****         /* code */
+  33:Core/Src/app_debug.c ****         result = "INFO";
+ARM GAS  /tmp/cclgQ5no.s 			page 4
+
+
+ 130              		.loc 1 33 16
+ 131 0050 0D4B     		ldr	r3, .L15+16
+ 132 0052 FB60     		str	r3, [r7, #12]
+  34:Core/Src/app_debug.c ****         break;
+ 133              		.loc 1 34 9
+ 134 0054 09E0     		b	.L12
+ 135              	.L6:
+  35:Core/Src/app_debug.c ****     case LOG_DEBUG:
+  36:Core/Src/app_debug.c ****         /* code */
+  37:Core/Src/app_debug.c ****         result = "DEBUG";
+ 136              		.loc 1 37 16
+ 137 0056 0D4B     		ldr	r3, .L15+20
+ 138 0058 FB60     		str	r3, [r7, #12]
+  38:Core/Src/app_debug.c ****         break;
+ 139              		.loc 1 38 9
+ 140 005a 06E0     		b	.L12
+ 141              	.L5:
+  39:Core/Src/app_debug.c ****     case LOG_TRACE:
+  40:Core/Src/app_debug.c ****         /* code */
+  41:Core/Src/app_debug.c ****         result = "TRACE";
+ 142              		.loc 1 41 16
+ 143 005c 0C4B     		ldr	r3, .L15+24
+ 144 005e FB60     		str	r3, [r7, #12]
+  42:Core/Src/app_debug.c ****         break;
+ 145              		.loc 1 42 9
+ 146 0060 03E0     		b	.L12
+ 147              	.L3:
+  43:Core/Src/app_debug.c ****     case LOG_ALL:
+  44:Core/Src/app_debug.c ****         /* code */
+  45:Core/Src/app_debug.c ****         result = "ALL";
+ 148              		.loc 1 45 16
+ 149 0062 0C4B     		ldr	r3, .L15+28
+ 150 0064 FB60     		str	r3, [r7, #12]
+  46:Core/Src/app_debug.c ****         break;
+ 151              		.loc 1 46 9
+ 152 0066 00E0     		b	.L12
+ 153              	.L14:
+  47:Core/Src/app_debug.c ****     default:
+  48:Core/Src/app_debug.c ****         break;
+ 154              		.loc 1 48 9
+ 155 0068 00BF     		nop
+ 156              	.L12:
+  49:Core/Src/app_debug.c ****     }
+  50:Core/Src/app_debug.c ****     return result;
+ 157              		.loc 1 50 12
+ 158 006a FB68     		ldr	r3, [r7, #12]
+  51:Core/Src/app_debug.c **** }
+ 159              		.loc 1 51 1
+ 160 006c 1846     		mov	r0, r3
+ 161 006e 1437     		adds	r7, r7, #20
+ 162              		.cfi_def_cfa_offset 4
+ 163 0070 BD46     		mov	sp, r7
+ 164              		.cfi_def_cfa_register 13
+ 165              		@ sp needed
+ 166 0072 80BC     		pop	{r7}
+ 167              		.cfi_restore 7
+ 168              		.cfi_def_cfa_offset 0
+ARM GAS  /tmp/cclgQ5no.s 			page 5
+
+
+ 169 0074 7047     		bx	lr
+ 170              	.L16:
+ 171 0076 00BF     		.align	2
+ 172              	.L15:
+ 173 0078 00000000 		.word	.LC0
+ 174 007c 04000000 		.word	.LC1
+ 175 0080 0C000000 		.word	.LC2
+ 176 0084 14000000 		.word	.LC3
+ 177 0088 1C000000 		.word	.LC4
+ 178 008c 24000000 		.word	.LC5
+ 179 0090 2C000000 		.word	.LC6
+ 180 0094 34000000 		.word	.LC7
+ 181              		.cfi_endproc
+ 182              	.LFE65:
+ 184              		.section	.text.APPDEBUG_init,"ax",%progbits
+ 185              		.align	1
+ 186              		.global	APPDEBUG_init
+ 187              		.syntax unified
+ 188              		.thumb
+ 189              		.thumb_func
+ 191              	APPDEBUG_init:
+ 192              	.LFB66:
+  52:Core/Src/app_debug.c **** 
+  53:Core/Src/app_debug.c **** void APPDEBUG_init(log_level_t _level){
+ 193              		.loc 1 53 39
+ 194              		.cfi_startproc
+ 195              		@ args = 0, pretend = 0, frame = 16
+ 196              		@ frame_needed = 1, uses_anonymous_args = 0
+ 197 0000 80B5     		push	{r7, lr}
+ 198              		.cfi_def_cfa_offset 8
+ 199              		.cfi_offset 7, -8
+ 200              		.cfi_offset 14, -4
+ 201 0002 84B0     		sub	sp, sp, #16
+ 202              		.cfi_def_cfa_offset 24
+ 203 0004 00AF     		add	r7, sp, #0
+ 204              		.cfi_def_cfa_register 7
+ 205 0006 0346     		mov	r3, r0
+ 206 0008 FB71     		strb	r3, [r7, #7]
+ 207              	.LBB2:
+  54:Core/Src/app_debug.c ****     // Enable Clock in GPIOA
+  55:Core/Src/app_debug.c ****     __HAL_RCC_GPIOA_CLK_ENABLE();
+ 208              		.loc 1 55 5
+ 209 000a 1A4B     		ldr	r3, .L19
+ 210 000c 9B69     		ldr	r3, [r3, #24]
+ 211 000e 194A     		ldr	r2, .L19
+ 212 0010 43F00403 		orr	r3, r3, #4
+ 213 0014 9361     		str	r3, [r2, #24]
+ 214 0016 174B     		ldr	r3, .L19
+ 215 0018 9B69     		ldr	r3, [r3, #24]
+ 216 001a 03F00403 		and	r3, r3, #4
+ 217 001e FB60     		str	r3, [r7, #12]
+ 218 0020 FB68     		ldr	r3, [r7, #12]
+ 219              	.LBE2:
+  56:Core/Src/app_debug.c **** 
+  57:Core/Src/app_debug.c ****     // Init UART2
+  58:Core/Src/app_debug.c **** 	huart1.Instance = USART1;
+ 220              		.loc 1 58 18
+ARM GAS  /tmp/cclgQ5no.s 			page 6
+
+
+ 221 0022 154B     		ldr	r3, .L19+4
+ 222 0024 154A     		ldr	r2, .L19+8
+ 223 0026 1A60     		str	r2, [r3]
+  59:Core/Src/app_debug.c **** 	huart1.Init.BaudRate = 115200;
+ 224              		.loc 1 59 23
+ 225 0028 134B     		ldr	r3, .L19+4
+ 226 002a 4FF4E132 		mov	r2, #115200
+ 227 002e 5A60     		str	r2, [r3, #4]
+  60:Core/Src/app_debug.c **** 	huart1.Init.WordLength = UART_WORDLENGTH_8B;
+ 228              		.loc 1 60 25
+ 229 0030 114B     		ldr	r3, .L19+4
+ 230 0032 0022     		movs	r2, #0
+ 231 0034 9A60     		str	r2, [r3, #8]
+  61:Core/Src/app_debug.c **** 	huart1.Init.StopBits = UART_STOPBITS_1;
+ 232              		.loc 1 61 23
+ 233 0036 104B     		ldr	r3, .L19+4
+ 234 0038 0022     		movs	r2, #0
+ 235 003a DA60     		str	r2, [r3, #12]
+  62:Core/Src/app_debug.c **** 	huart1.Init.Parity = UART_PARITY_NONE;
+ 236              		.loc 1 62 21
+ 237 003c 0E4B     		ldr	r3, .L19+4
+ 238 003e 0022     		movs	r2, #0
+ 239 0040 1A61     		str	r2, [r3, #16]
+  63:Core/Src/app_debug.c **** 	huart1.Init.Mode = UART_MODE_TX_RX;
+ 240              		.loc 1 63 19
+ 241 0042 0D4B     		ldr	r3, .L19+4
+ 242 0044 0C22     		movs	r2, #12
+ 243 0046 5A61     		str	r2, [r3, #20]
+  64:Core/Src/app_debug.c **** 	huart1.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+ 244              		.loc 1 64 24
+ 245 0048 0B4B     		ldr	r3, .L19+4
+ 246 004a 0022     		movs	r2, #0
+ 247 004c 9A61     		str	r2, [r3, #24]
+  65:Core/Src/app_debug.c **** 	huart1.Init.OverSampling = UART_OVERSAMPLING_16;
+ 248              		.loc 1 65 27
+ 249 004e 0A4B     		ldr	r3, .L19+4
+ 250 0050 0022     		movs	r2, #0
+ 251 0052 DA61     		str	r2, [r3, #28]
+  66:Core/Src/app_debug.c **** 	if (HAL_UART_Init(&huart1) != HAL_OK)
+ 252              		.loc 1 66 6
+ 253 0054 0848     		ldr	r0, .L19+4
+ 254 0056 FFF7FEFF 		bl	HAL_UART_Init
+ 255 005a 0346     		mov	r3, r0
+ 256              		.loc 1 66 5
+ 257 005c 002B     		cmp	r3, #0
+ 258 005e 01D0     		beq	.L18
+  67:Core/Src/app_debug.c **** 	{
+  68:Core/Src/app_debug.c **** 	Error_Handler();
+ 259              		.loc 1 68 2
+ 260 0060 FFF7FEFF 		bl	Error_Handler
+ 261              	.L18:
+  69:Core/Src/app_debug.c **** 	}
+  70:Core/Src/app_debug.c ****     level = _level;
+ 262              		.loc 1 70 11
+ 263 0064 064A     		ldr	r2, .L19+12
+ 264 0066 FB79     		ldrb	r3, [r7, #7]
+ 265 0068 1370     		strb	r3, [r2]
+ARM GAS  /tmp/cclgQ5no.s 			page 7
+
+
+  71:Core/Src/app_debug.c **** }
+ 266              		.loc 1 71 1
+ 267 006a 00BF     		nop
+ 268 006c 1037     		adds	r7, r7, #16
+ 269              		.cfi_def_cfa_offset 8
+ 270 006e BD46     		mov	sp, r7
+ 271              		.cfi_def_cfa_register 13
+ 272              		@ sp needed
+ 273 0070 80BD     		pop	{r7, pc}
+ 274              	.L20:
+ 275 0072 00BF     		.align	2
+ 276              	.L19:
+ 277 0074 00100240 		.word	1073876992
+ 278 0078 00000000 		.word	huart1
+ 279 007c 00380140 		.word	1073821696
+ 280 0080 00000000 		.word	level
+ 281              		.cfi_endproc
+ 282              	.LFE66:
+ 284              		.section	.rodata
+ 285              		.align	2
+ 286              	.LC8:
+ 287 0038 2564205B 		.ascii	"%d [%s] %s:%d: %s\015\012\000"
+ 287      25735D20 
+ 287      25733A25 
+ 287      643A2025 
+ 287      730D0A00 
+ 288              		.section	.text.APPDEBUG_log_log,"ax",%progbits
+ 289              		.align	1
+ 290              		.global	APPDEBUG_log_log
+ 291              		.syntax unified
+ 292              		.thumb
+ 293              		.thumb_func
+ 295              	APPDEBUG_log_log:
+ 296              	.LFB67:
+  72:Core/Src/app_debug.c **** 
+  73:Core/Src/app_debug.c **** 
+  74:Core/Src/app_debug.c **** 
+  75:Core/Src/app_debug.c **** void APPDEBUG_log_log(log_level_t _level, const char *file, int line, const char *fmt, ...){
+ 297              		.loc 1 75 92
+ 298              		.cfi_startproc
+ 299              		@ args = 4, pretend = 4, frame = 24
+ 300              		@ frame_needed = 1, uses_anonymous_args = 1
+ 301 0000 08B4     		push	{r3}
+ 302              		.cfi_def_cfa_offset 4
+ 303              		.cfi_offset 3, -4
+ 304 0002 80B5     		push	{r7, lr}
+ 305              		.cfi_def_cfa_offset 12
+ 306              		.cfi_offset 7, -12
+ 307              		.cfi_offset 14, -8
+ 308 0004 8BB0     		sub	sp, sp, #44
+ 309              		.cfi_def_cfa_offset 56
+ 310 0006 04AF     		add	r7, sp, #16
+ 311              		.cfi_def_cfa 7, 40
+ 312 0008 0346     		mov	r3, r0
+ 313 000a B960     		str	r1, [r7, #8]
+ 314 000c 7A60     		str	r2, [r7, #4]
+ 315 000e FB73     		strb	r3, [r7, #15]
+ARM GAS  /tmp/cclgQ5no.s 			page 8
+
+
+  76:Core/Src/app_debug.c ****     va_list args;
+  77:Core/Src/app_debug.c ****     if(_level > level){
+ 316              		.loc 1 77 15
+ 317 0010 204B     		ldr	r3, .L25
+ 318 0012 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 319              		.loc 1 77 7
+ 320 0014 FA7B     		ldrb	r2, [r7, #15]	@ zero_extendqisi2
+ 321 0016 9A42     		cmp	r2, r3
+ 322 0018 34D8     		bhi	.L24
+  78:Core/Src/app_debug.c ****         return;
+  79:Core/Src/app_debug.c ****     }
+  80:Core/Src/app_debug.c ****     // Clean Up Message Buffer , Log Buffer
+  81:Core/Src/app_debug.c ****     memset(message_buffer , 0 , MAX_LOG_BUFFER);
+ 323              		.loc 1 81 5
+ 324 001a 4FF48062 		mov	r2, #1024
+ 325 001e 0021     		movs	r1, #0
+ 326 0020 1D48     		ldr	r0, .L25+4
+ 327 0022 FFF7FEFF 		bl	memset
+  82:Core/Src/app_debug.c ****     memset(log_buffer , 0 , MAX_LOG_BUFFER);
+ 328              		.loc 1 82 5
+ 329 0026 4FF48062 		mov	r2, #1024
+ 330 002a 0021     		movs	r1, #0
+ 331 002c 1B48     		ldr	r0, .L25+8
+ 332 002e FFF7FEFF 		bl	memset
+  83:Core/Src/app_debug.c ****     // Time LOG_LEVEL FILE:LINE: [Message]
+  84:Core/Src/app_debug.c ****     va_start(args, fmt);
+ 333              		.loc 1 84 5
+ 334 0032 07F12803 		add	r3, r7, #40
+ 335 0036 7B61     		str	r3, [r7, #20]
+  85:Core/Src/app_debug.c ****     va_end(args);
+  86:Core/Src/app_debug.c ****     vsnprintf(message_buffer , MAX_LOG_BUFFER , fmt, args);
+ 336              		.loc 1 86 5
+ 337 0038 7B69     		ldr	r3, [r7, #20]
+ 338 003a 7A6A     		ldr	r2, [r7, #36]
+ 339 003c 4FF48061 		mov	r1, #1024
+ 340 0040 1548     		ldr	r0, .L25+4
+ 341 0042 FFF7FEFF 		bl	vsnprintf
+  87:Core/Src/app_debug.c ****     snprintf(log_buffer , MAX_LOG_BUFFER, "%d [%s] %s:%d: %s\r\n" , 123 , level_to_str(_level) , fi
+ 342              		.loc 1 87 5
+ 343 0046 FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 344 0048 1846     		mov	r0, r3
+ 345 004a FFF7FEFF 		bl	level_to_str
+ 346 004e 0246     		mov	r2, r0
+ 347 0050 114B     		ldr	r3, .L25+4
+ 348 0052 0393     		str	r3, [sp, #12]
+ 349 0054 7B68     		ldr	r3, [r7, #4]
+ 350 0056 0293     		str	r3, [sp, #8]
+ 351 0058 BB68     		ldr	r3, [r7, #8]
+ 352 005a 0193     		str	r3, [sp, #4]
+ 353 005c 0092     		str	r2, [sp]
+ 354 005e 7B23     		movs	r3, #123
+ 355 0060 0F4A     		ldr	r2, .L25+12
+ 356 0062 4FF48061 		mov	r1, #1024
+ 357 0066 0D48     		ldr	r0, .L25+8
+ 358 0068 FFF7FEFF 		bl	snprintf
+  88:Core/Src/app_debug.c ****     HAL_UART_Transmit(&huart1, log_buffer , strlen(log_buffer) , 0xFFFF);
+ 359              		.loc 1 88 45
+ARM GAS  /tmp/cclgQ5no.s 			page 9
+
+
+ 360 006c 0B48     		ldr	r0, .L25+8
+ 361 006e FFF7FEFF 		bl	strlen
+ 362 0072 0346     		mov	r3, r0
+ 363              		.loc 1 88 5
+ 364 0074 9AB2     		uxth	r2, r3
+ 365 0076 4FF6FF73 		movw	r3, #65535
+ 366 007a 0849     		ldr	r1, .L25+8
+ 367 007c 0948     		ldr	r0, .L25+16
+ 368 007e FFF7FEFF 		bl	HAL_UART_Transmit
+ 369 0082 00E0     		b	.L21
+ 370              	.L24:
+  78:Core/Src/app_debug.c ****     }
+ 371              		.loc 1 78 9
+ 372 0084 00BF     		nop
+ 373              	.L21:
+  89:Core/Src/app_debug.c **** }...
+ 374              		.loc 1 89 1
+ 375 0086 1C37     		adds	r7, r7, #28
+ 376              		.cfi_def_cfa_offset 12
+ 377 0088 BD46     		mov	sp, r7
+ 378              		.cfi_def_cfa_register 13
+ 379              		@ sp needed
+ 380 008a BDE88040 		pop	{r7, lr}
+ 381              		.cfi_restore 14
+ 382              		.cfi_restore 7
+ 383              		.cfi_def_cfa_offset 4
+ 384 008e 01B0     		add	sp, sp, #4
+ 385              		.cfi_restore 3
+ 386              		.cfi_def_cfa_offset 0
+ 387 0090 7047     		bx	lr
+ 388              	.L26:
+ 389 0092 00BF     		.align	2
+ 390              	.L25:
+ 391 0094 00000000 		.word	level
+ 392 0098 00000000 		.word	message_buffer
+ 393 009c 00000000 		.word	log_buffer
+ 394 00a0 38000000 		.word	.LC8
+ 395 00a4 00000000 		.word	huart1
+ 396              		.cfi_endproc
+ 397              	.LFE67:
+ 399              		.text
+ 400              	.Letext0:
+ 401              		.file 2 "/opt/st/stm32cubeide_1.10.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-
+ 402              		.file 3 "/opt/st/stm32cubeide_1.10.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-
+ 403              		.file 4 "Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f103xe.h"
+ 404              		.file 5 "/opt/st/stm32cubeide_1.10.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-
+ 405              		.file 6 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_def.h"
+ 406              		.file 7 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_dma.h"
+ 407              		.file 8 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h"
+ 408              		.file 9 "Core/Inc/app_debug.h"
+ 409              		.file 10 "/opt/st/stm32cubeide_1.10.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for
+ 410              		.file 11 "/opt/st/stm32cubeide_1.10.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for
+ 411              		.file 12 "<built-in>"
+ 412              		.file 13 "Core/Inc/main.h"
+ARM GAS  /tmp/cclgQ5no.s 			page 10
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 app_debug.c
+     /tmp/cclgQ5no.s:18     .bss.huart1:0000000000000000 $d
+     /tmp/cclgQ5no.s:21     .bss.huart1:0000000000000000 huart1
+     /tmp/cclgQ5no.s:26     .bss.level:0000000000000000 level
+     /tmp/cclgQ5no.s:27     .bss.level:0000000000000000 $d
+     /tmp/cclgQ5no.s:29     .bss.log_buffer:0000000000000000 $d
+     /tmp/cclgQ5no.s:32     .bss.log_buffer:0000000000000000 log_buffer
+     /tmp/cclgQ5no.s:35     .bss.message_buffer:0000000000000000 $d
+     /tmp/cclgQ5no.s:38     .bss.message_buffer:0000000000000000 message_buffer
+     /tmp/cclgQ5no.s:41     .rodata:0000000000000000 $d
+     /tmp/cclgQ5no.s:66     .text.level_to_str:0000000000000000 $t
+     /tmp/cclgQ5no.s:71     .text.level_to_str:0000000000000000 level_to_str
+     /tmp/cclgQ5no.s:96     .text.level_to_str:0000000000000018 $d
+     /tmp/cclgQ5no.s:104    .text.level_to_str:0000000000000038 $t
+     /tmp/cclgQ5no.s:173    .text.level_to_str:0000000000000078 $d
+     /tmp/cclgQ5no.s:185    .text.APPDEBUG_init:0000000000000000 $t
+     /tmp/cclgQ5no.s:191    .text.APPDEBUG_init:0000000000000000 APPDEBUG_init
+     /tmp/cclgQ5no.s:277    .text.APPDEBUG_init:0000000000000074 $d
+     /tmp/cclgQ5no.s:289    .text.APPDEBUG_log_log:0000000000000000 $t
+     /tmp/cclgQ5no.s:295    .text.APPDEBUG_log_log:0000000000000000 APPDEBUG_log_log
+     /tmp/cclgQ5no.s:391    .text.APPDEBUG_log_log:0000000000000094 $d
+                           .group:0000000000000000 wm4.0.06d673f17b3774aa7c18073a6cbf2f9a
+                           .group:0000000000000000 wm4.stm32f1xx_hal_conf.h.22.e8a44c2127afc730ae3c2427a61800bf
+                           .group:0000000000000000 wm4.stm32f1xx.h.39.208bb8a61c892b7c37d899c49a031330
+                           .group:0000000000000000 wm4.stm32f103xe.h.38.4f78f3a072dc4f9355fc3df8c7b1beeb
+                           .group:0000000000000000 wm4._newlib_version.h.4.bfdf54b0af045d4a71376ae00f63a22c
+                           .group:0000000000000000 wm4.features.h.33.318b64d71e0957639cfb30f1db1f7ec8
+                           .group:0000000000000000 wm4._default_types.h.15.247e5cd201eca3442cbf5404108c4935
+                           .group:0000000000000000 wm4._intsup.h.10.48bafbb683905c4daa4565a85aeeb264
+                           .group:0000000000000000 wm4._stdint.h.10.c24fa3af3bc1706662bb5593a907e841
+                           .group:0000000000000000 wm4.stdint.h.23.d53047a68f4a85177f80b422d52785ed
+                           .group:0000000000000000 wm4.cmsis_version.h.32.4d5822004c01a829a975260e854b5f8e
+                           .group:0000000000000000 wm4.core_cm3.h.66.fc46cac19810db8f98d67da7ef88f42c
+                           .group:0000000000000000 wm4.cmsis_gcc.h.26.4f5798e999d5690b80e6ded3ecc94b37
+                           .group:0000000000000000 wm4.core_cm3.h.127.f4474120f1a7524deb56f9d74ff175da
+                           .group:0000000000000000 wm4.stm32f103xe.h.725.9a96d0161f2d027636715e1ecf40f574
+                           .group:0000000000000000 wm4.stm32f1xx.h.162.96b09079a093c34dbd7f0b85cbd0ddee
+                           .group:0000000000000000 wm4.stm32_hal_legacy.h.23.91ba5b544a4c2be2620a1e7ff0049e10
+                           .group:0000000000000000 wm4.stddef.h.39.144cf5ddcd53cbfdac30259dc1a6c87f
+                           .group:0000000000000000 wm4.stm32f1xx_hal_def.h.57.18d01ce1aa74e9fb44dbf16f821a574a
+                           .group:0000000000000000 wm4.stm32f1xx_hal_rcc.h.95.21591bbc513aaa813c0b8640c3b32517
+                           .group:0000000000000000 wm4.stm32f1xx_hal_rcc_ex.h.22.66c7d13818747b107e10421a4fd8120c
+                           .group:0000000000000000 wm4.stm32f1xx_hal_rcc.h.1202.f8e5f9e0cf4eef7840facf5396029056
+                           .group:0000000000000000 wm4.stm32f1xx_hal_gpio.h.22.fa638d688dcc57ca806fe6a7831b0d04
+                           .group:0000000000000000 wm4.stm32f1xx_hal_gpio_ex.h.22.e3c24d30e9ab98ab5b1c7af6d8871c08
+                           .group:0000000000000000 wm4.stm32f1xx_hal_gpio.h.263.f5ebf2f545ade59412ab9261c8e35dc4
+                           .group:0000000000000000 wm4.stm32f1xx_hal_exti.h.22.29f568b08faa2fc4cf934d8ccc8e2874
+                           .group:0000000000000000 wm4.stm32f1xx_hal_dma.h.22.3c14338534886827bf3aeaa2a7f412a1
+                           .group:0000000000000000 wm4.stm32f1xx_hal_dma_ex.h.22.438e1362150b97592782187e6bf5da53
+                           .group:0000000000000000 wm4.stm32f1xx_hal_dma.h.409.cafcd2cfe701091535636be537c18293
+                           .group:0000000000000000 wm4.stm32f1xx_hal_cortex.h.22.b5f4174bb6a50d95405567b8f50e0900
+                           .group:0000000000000000 wm4.stm32f1xx_hal_flash.h.22.5cea9a7210e6315b41724b47b5fdf203
+                           .group:0000000000000000 wm4.stm32f1xx_hal_flash_ex.h.22.af08998ffc014feb1391660ffb6139fe
+                           .group:0000000000000000 wm4.stm32f1xx_hal_pwr.h.22.3438c476faafc3240bf146f143df3fcd
+                           .group:0000000000000000 wm4.stm32f1xx_hal_uart.h.22.5f7992e497faa36aa98f09f7214f4dbb
+                           .group:0000000000000000 wm4.stm32f1xx_hal.h.88.ae5c4f2e83348980a1011c2a2ef54956
+ARM GAS  /tmp/cclgQ5no.s 			page 11
+
+
+                           .group:0000000000000000 wm4.app_debug.h.2.80357fb0089bd779e5ca54694f8f1303
+                           .group:0000000000000000 wm4.newlib.h.8.7cb3972cd43265932d4782d5eb589854
+                           .group:0000000000000000 wm4.ieeefp.h.77.25247dc27dbe3b23bfe98c2dc18f6ac5
+                           .group:0000000000000000 wm4.config.h.224.c701144a7b0518c6ee9b9b5465b79f81
+                           .group:0000000000000000 wm4._ansi.h.31.de524f58584151836e90d8620a16f8e8
+                           .group:0000000000000000 wm4._types.h.20.dd0d04dca3800a0d2a6129b87f3adbb2
+                           .group:0000000000000000 wm4.stddef.h.155.3588ebfdd1e8c7ede80509bb9c3b8009
+                           .group:0000000000000000 wm4._types.h.127.34941de1b2539d59d5cac00e0dd27a45
+                           .group:0000000000000000 wm4.reent.h.17.e292bf8b0bec6c96e131a54347145a30
+                           .group:0000000000000000 wm4.lock.h.2.1461d1fff82dffe8bfddc23307f6484f
+                           .group:0000000000000000 wm4.reent.h.77.dcd6129ff07fe81bd5636db29abe53b2
+                           .group:0000000000000000 wm4.cdefs.h.49.39045112216f6a021dbdffe3bf5accce
+                           .group:0000000000000000 wm4.string.h.15.dab3980bf35408a4c507182805e2de3a
+                           .group:0000000000000000 wm4.stddef.h.155.ba788add86a0e365f264484f110c3c29
+                           .group:0000000000000000 wm4.string.h.177.59a005921fa78485abc80a0267de5752
+                           .group:0000000000000000 wm4.stdarg.h.31.b55da1089056868966f25de5dbfc7d3c
+
+UNDEFINED SYMBOLS
+HAL_UART_Init
+Error_Handler
+memset
+vsnprintf
+snprintf
+strlen
+HAL_UART_Transmit

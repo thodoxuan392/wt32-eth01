@@ -1,0 +1,6 @@
+../Core/Src/app_uart.c:22:6:UART_Init	8	static
+../Core/Src/app_uart.c:41:9:UART_Ethernet_isAvailable	4	static
+../Core/Src/app_uart.c:47:9:UART_Ethernet_ByteRead	16	static
+../Core/Src/app_uart.c:53:6:UART_Ethernet_BytesWrite	16	static
+../Core/Src/app_uart.c:62:6:HAL_UART_RxCpltCallback	16	static
+../Core/Src/app_uart.c:72:6:HAL_UART_TxCpltCallback	16	static

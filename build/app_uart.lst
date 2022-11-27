@@ -1,0 +1,676 @@
+ARM GAS  /tmp/ccVhC2yc.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.arch armv7-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 6
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"app_uart.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.global	huart1
+  18              		.section	.bss.huart1,"aw",%nobits
+  19              		.align	2
+  22              	huart1:
+  23 0000 00000000 		.space	68
+  23      00000000 
+  23      00000000 
+  23      00000000 
+  23      00000000 
+  24              		.global	huart2
+  25              		.section	.bss.huart2,"aw",%nobits
+  26              		.align	2
+  29              	huart2:
+  30 0000 00000000 		.space	68
+  30      00000000 
+  30      00000000 
+  30      00000000 
+  30      00000000 
+  31              		.section	.bss.uart_ethernet_interrupt_data,"aw",%nobits
+  34              	uart_ethernet_interrupt_data:
+  35 0000 00       		.space	1
+  36              		.section	.bss.uart_ethernet_buffer,"aw",%nobits
+  37              		.align	2
+  40              	uart_ethernet_buffer:
+  41 0000 00000000 		.space	2048
+  41      00000000 
+  41      00000000 
+  41      00000000 
+  41      00000000 
+  42              		.section	.bss.uart_ethernet_head,"aw",%nobits
+  45              	uart_ethernet_head:
+  46 0000 00       		.space	1
+  47              		.section	.bss.uart_ethernet_tail,"aw",%nobits
+  50              	uart_ethernet_tail:
+  51 0000 00       		.space	1
+  52              		.section	.data.uart_ethernet_transmit_done_flag,"aw"
+  55              	uart_ethernet_transmit_done_flag:
+  56 0000 01       		.byte	1
+  57              		.section	.text.UART_Init,"ax",%progbits
+  58              		.align	1
+  59              		.global	UART_Init
+ARM GAS  /tmp/ccVhC2yc.s 			page 2
+
+
+  60              		.syntax unified
+  61              		.thumb
+  62              		.thumb_func
+  64              	UART_Init:
+  65              	.LFB65:
+  66              		.file 1 "Core/Src/app_uart.c"
+   1:Core/Src/app_uart.c **** /*
+   2:Core/Src/app_uart.c **** * app_uart.c
+   3:Core/Src/app_uart.c **** * @brief UART: UART1 for log, uart 2 for ethernet
+   4:Core/Src/app_uart.c **** *  Created on: Nov 16, 2022
+   5:Core/Src/app_uart.c **** *      Author: xuanthodo
+   6:Core/Src/app_uart.c **** */
+   7:Core/Src/app_uart.c **** #include "main.h"
+   8:Core/Src/app_uart.c **** #include "app_uart.h"
+   9:Core/Src/app_uart.c **** 
+  10:Core/Src/app_uart.c **** #define UART_BUFFER_MAX 2048
+  11:Core/Src/app_uart.c **** 
+  12:Core/Src/app_uart.c **** UART_HandleTypeDef huart1;
+  13:Core/Src/app_uart.c **** UART_HandleTypeDef huart2;
+  14:Core/Src/app_uart.c **** 
+  15:Core/Src/app_uart.c **** // UART Ethernet
+  16:Core/Src/app_uart.c **** static uint8_t uart_ethernet_interrupt_data;
+  17:Core/Src/app_uart.c **** static uint8_t uart_ethernet_buffer[2048];
+  18:Core/Src/app_uart.c **** static uint8_t uart_ethernet_head = 0;
+  19:Core/Src/app_uart.c **** static uint8_t uart_ethernet_tail = 0;
+  20:Core/Src/app_uart.c **** static uint8_t uart_ethernet_transmit_done_flag = 1;
+  21:Core/Src/app_uart.c **** 
+  22:Core/Src/app_uart.c **** 
+  23:Core/Src/app_uart.c **** void UART_Init(){
+  67              		.loc 1 23 17
+  68              		.cfi_startproc
+  69              		@ args = 0, pretend = 0, frame = 0
+  70              		@ frame_needed = 1, uses_anonymous_args = 0
+  71 0000 80B5     		push	{r7, lr}
+  72              		.cfi_def_cfa_offset 8
+  73              		.cfi_offset 7, -8
+  74              		.cfi_offset 14, -4
+  75 0002 00AF     		add	r7, sp, #0
+  76              		.cfi_def_cfa_register 7
+  24:Core/Src/app_uart.c **** 
+  25:Core/Src/app_uart.c **** 	// Init UART1
+  26:Core/Src/app_uart.c **** 	huart2.Instance = USART2;
+  77              		.loc 1 26 18
+  78 0004 134B     		ldr	r3, .L3
+  79 0006 144A     		ldr	r2, .L3+4
+  80 0008 1A60     		str	r2, [r3]
+  27:Core/Src/app_uart.c **** 	huart2.Init.BaudRate = 115200;
+  81              		.loc 1 27 23
+  82 000a 124B     		ldr	r3, .L3
+  83 000c 4FF4E132 		mov	r2, #115200
+  84 0010 5A60     		str	r2, [r3, #4]
+  28:Core/Src/app_uart.c **** 	huart2.Init.WordLength = UART_WORDLENGTH_8B;
+  85              		.loc 1 28 25
+  86 0012 104B     		ldr	r3, .L3
+  87 0014 0022     		movs	r2, #0
+  88 0016 9A60     		str	r2, [r3, #8]
+  29:Core/Src/app_uart.c **** 	huart2.Init.StopBits = UART_STOPBITS_1;
+ARM GAS  /tmp/ccVhC2yc.s 			page 3
+
+
+  89              		.loc 1 29 23
+  90 0018 0E4B     		ldr	r3, .L3
+  91 001a 0022     		movs	r2, #0
+  92 001c DA60     		str	r2, [r3, #12]
+  30:Core/Src/app_uart.c **** 	huart2.Init.Parity = UART_PARITY_NONE;
+  93              		.loc 1 30 21
+  94 001e 0D4B     		ldr	r3, .L3
+  95 0020 0022     		movs	r2, #0
+  96 0022 1A61     		str	r2, [r3, #16]
+  31:Core/Src/app_uart.c **** 	huart2.Init.Mode = UART_MODE_TX_RX;
+  97              		.loc 1 31 19
+  98 0024 0B4B     		ldr	r3, .L3
+  99 0026 0C22     		movs	r2, #12
+ 100 0028 5A61     		str	r2, [r3, #20]
+  32:Core/Src/app_uart.c **** 	huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+ 101              		.loc 1 32 24
+ 102 002a 0A4B     		ldr	r3, .L3
+ 103 002c 0022     		movs	r2, #0
+ 104 002e 9A61     		str	r2, [r3, #24]
+  33:Core/Src/app_uart.c **** 	huart2.Init.OverSampling = UART_OVERSAMPLING_16;
+ 105              		.loc 1 33 27
+ 106 0030 084B     		ldr	r3, .L3
+ 107 0032 0022     		movs	r2, #0
+ 108 0034 DA61     		str	r2, [r3, #28]
+  34:Core/Src/app_uart.c **** 	if (HAL_UART_Init(&huart2) != HAL_OK)
+ 109              		.loc 1 34 6
+ 110 0036 0748     		ldr	r0, .L3
+ 111 0038 FFF7FEFF 		bl	HAL_UART_Init
+ 112 003c 0346     		mov	r3, r0
+ 113              		.loc 1 34 5
+ 114 003e 002B     		cmp	r3, #0
+ 115 0040 01D0     		beq	.L2
+  35:Core/Src/app_uart.c **** 	{
+  36:Core/Src/app_uart.c **** 	Error_Handler();
+ 116              		.loc 1 36 2
+ 117 0042 FFF7FEFF 		bl	Error_Handler
+ 118              	.L2:
+  37:Core/Src/app_uart.c **** 	}
+  38:Core/Src/app_uart.c **** 	HAL_UART_Receive_IT(&huart2, &uart_ethernet_interrupt_data, 1);
+ 119              		.loc 1 38 2
+ 120 0046 0122     		movs	r2, #1
+ 121 0048 0449     		ldr	r1, .L3+8
+ 122 004a 0248     		ldr	r0, .L3
+ 123 004c FFF7FEFF 		bl	HAL_UART_Receive_IT
+  39:Core/Src/app_uart.c **** 
+  40:Core/Src/app_uart.c **** 
+  41:Core/Src/app_uart.c **** }
+ 124              		.loc 1 41 1
+ 125 0050 00BF     		nop
+ 126 0052 80BD     		pop	{r7, pc}
+ 127              	.L4:
+ 128              		.align	2
+ 129              	.L3:
+ 130 0054 00000000 		.word	huart2
+ 131 0058 00440040 		.word	1073759232
+ 132 005c 00000000 		.word	uart_ethernet_interrupt_data
+ 133              		.cfi_endproc
+ARM GAS  /tmp/ccVhC2yc.s 			page 4
+
+
+ 134              	.LFE65:
+ 136              		.section	.text.UART_Logger_BytesWrite,"ax",%progbits
+ 137              		.align	1
+ 138              		.global	UART_Logger_BytesWrite
+ 139              		.syntax unified
+ 140              		.thumb
+ 141              		.thumb_func
+ 143              	UART_Logger_BytesWrite:
+ 144              	.LFB66:
+  42:Core/Src/app_uart.c **** 
+  43:Core/Src/app_uart.c **** void UART_Logger_BytesWrite(uint8_t* data , uint16_t data_len){
+ 145              		.loc 1 43 63
+ 146              		.cfi_startproc
+ 147              		@ args = 0, pretend = 0, frame = 8
+ 148              		@ frame_needed = 1, uses_anonymous_args = 0
+ 149 0000 80B5     		push	{r7, lr}
+ 150              		.cfi_def_cfa_offset 8
+ 151              		.cfi_offset 7, -8
+ 152              		.cfi_offset 14, -4
+ 153 0002 82B0     		sub	sp, sp, #8
+ 154              		.cfi_def_cfa_offset 16
+ 155 0004 00AF     		add	r7, sp, #0
+ 156              		.cfi_def_cfa_register 7
+ 157 0006 7860     		str	r0, [r7, #4]
+ 158 0008 0B46     		mov	r3, r1
+ 159 000a 7B80     		strh	r3, [r7, #2]	@ movhi
+  44:Core/Src/app_uart.c **** 	HAL_UART_Transmit(&huart1, data, data_len, 0xFF);
+ 160              		.loc 1 44 2
+ 161 000c 7A88     		ldrh	r2, [r7, #2]
+ 162 000e FF23     		movs	r3, #255
+ 163 0010 7968     		ldr	r1, [r7, #4]
+ 164 0012 0348     		ldr	r0, .L6
+ 165 0014 FFF7FEFF 		bl	HAL_UART_Transmit
+  45:Core/Src/app_uart.c **** }
+ 166              		.loc 1 45 1
+ 167 0018 00BF     		nop
+ 168 001a 0837     		adds	r7, r7, #8
+ 169              		.cfi_def_cfa_offset 8
+ 170 001c BD46     		mov	sp, r7
+ 171              		.cfi_def_cfa_register 13
+ 172              		@ sp needed
+ 173 001e 80BD     		pop	{r7, pc}
+ 174              	.L7:
+ 175              		.align	2
+ 176              	.L6:
+ 177 0020 00000000 		.word	huart1
+ 178              		.cfi_endproc
+ 179              	.LFE66:
+ 181              		.section	.text.UART_Ethernet_isAvailable,"ax",%progbits
+ 182              		.align	1
+ 183              		.global	UART_Ethernet_isAvailable
+ 184              		.syntax unified
+ 185              		.thumb
+ 186              		.thumb_func
+ 188              	UART_Ethernet_isAvailable:
+ 189              	.LFB67:
+  46:Core/Src/app_uart.c **** 
+ARM GAS  /tmp/ccVhC2yc.s 			page 5
+
+
+  47:Core/Src/app_uart.c **** 
+  48:Core/Src/app_uart.c **** 
+  49:Core/Src/app_uart.c **** 
+  50:Core/Src/app_uart.c **** uint8_t UART_Ethernet_isAvailable(){
+ 190              		.loc 1 50 36
+ 191              		.cfi_startproc
+ 192              		@ args = 0, pretend = 0, frame = 0
+ 193              		@ frame_needed = 1, uses_anonymous_args = 0
+ 194              		@ link register save eliminated.
+ 195 0000 80B4     		push	{r7}
+ 196              		.cfi_def_cfa_offset 4
+ 197              		.cfi_offset 7, -4
+ 198 0002 00AF     		add	r7, sp, #0
+ 199              		.cfi_def_cfa_register 7
+  51:Core/Src/app_uart.c **** 	if(uart_ethernet_head != uart_ethernet_tail){
+ 200              		.loc 1 51 24
+ 201 0004 064B     		ldr	r3, .L11
+ 202 0006 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
+ 203 0008 064B     		ldr	r3, .L11+4
+ 204 000a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 205              		.loc 1 51 4
+ 206 000c 9A42     		cmp	r2, r3
+ 207 000e 01D0     		beq	.L9
+  52:Core/Src/app_uart.c **** 		return 1;
+ 208              		.loc 1 52 10
+ 209 0010 0123     		movs	r3, #1
+ 210 0012 00E0     		b	.L10
+ 211              	.L9:
+  53:Core/Src/app_uart.c **** 	}
+  54:Core/Src/app_uart.c **** 	return 0;
+ 212              		.loc 1 54 9
+ 213 0014 0023     		movs	r3, #0
+ 214              	.L10:
+  55:Core/Src/app_uart.c **** }
+ 215              		.loc 1 55 1
+ 216 0016 1846     		mov	r0, r3
+ 217 0018 BD46     		mov	sp, r7
+ 218              		.cfi_def_cfa_register 13
+ 219              		@ sp needed
+ 220 001a 80BC     		pop	{r7}
+ 221              		.cfi_restore 7
+ 222              		.cfi_def_cfa_offset 0
+ 223 001c 7047     		bx	lr
+ 224              	.L12:
+ 225 001e 00BF     		.align	2
+ 226              	.L11:
+ 227 0020 00000000 		.word	uart_ethernet_head
+ 228 0024 00000000 		.word	uart_ethernet_tail
+ 229              		.cfi_endproc
+ 230              	.LFE67:
+ 232              		.section	.text.UART_Ethernet_ByteRead,"ax",%progbits
+ 233              		.align	1
+ 234              		.global	UART_Ethernet_ByteRead
+ 235              		.syntax unified
+ 236              		.thumb
+ 237              		.thumb_func
+ 239              	UART_Ethernet_ByteRead:
+ARM GAS  /tmp/ccVhC2yc.s 			page 6
+
+
+ 240              	.LFB68:
+  56:Core/Src/app_uart.c **** uint8_t UART_Ethernet_ByteRead(){
+ 241              		.loc 1 56 33
+ 242              		.cfi_startproc
+ 243              		@ args = 0, pretend = 0, frame = 8
+ 244              		@ frame_needed = 1, uses_anonymous_args = 0
+ 245              		@ link register save eliminated.
+ 246 0000 80B4     		push	{r7}
+ 247              		.cfi_def_cfa_offset 4
+ 248              		.cfi_offset 7, -4
+ 249 0002 83B0     		sub	sp, sp, #12
+ 250              		.cfi_def_cfa_offset 16
+ 251 0004 00AF     		add	r7, sp, #0
+ 252              		.cfi_def_cfa_register 7
+  57:Core/Src/app_uart.c **** 	uint8_t temp;
+  58:Core/Src/app_uart.c **** 	temp = uart_ethernet_buffer[uart_ethernet_tail];
+ 253              		.loc 1 58 29
+ 254 0006 0C4B     		ldr	r3, .L15
+ 255 0008 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 256 000a 1A46     		mov	r2, r3
+ 257              		.loc 1 58 7
+ 258 000c 0B4B     		ldr	r3, .L15+4
+ 259 000e 9B5C     		ldrb	r3, [r3, r2]
+ 260 0010 FB71     		strb	r3, [r7, #7]
+  59:Core/Src/app_uart.c **** 	uart_ethernet_tail = (uart_ethernet_tail + 1) %UART_BUFFER_MAX;
+ 261              		.loc 1 59 43
+ 262 0012 094B     		ldr	r3, .L15
+ 263 0014 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 264 0016 0133     		adds	r3, r3, #1
+ 265              		.loc 1 59 48
+ 266 0018 5A42     		rsbs	r2, r3, #0
+ 267 001a C3F30A03 		ubfx	r3, r3, #0, #11
+ 268 001e C2F30A02 		ubfx	r2, r2, #0, #11
+ 269 0022 58BF     		it	pl
+ 270 0024 5342     		rsbpl	r3, r2, #0
+ 271              		.loc 1 59 21
+ 272 0026 DAB2     		uxtb	r2, r3
+ 273 0028 034B     		ldr	r3, .L15
+ 274 002a 1A70     		strb	r2, [r3]
+  60:Core/Src/app_uart.c **** 	return temp;
+ 275              		.loc 1 60 9
+ 276 002c FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+  61:Core/Src/app_uart.c **** }
+ 277              		.loc 1 61 1
+ 278 002e 1846     		mov	r0, r3
+ 279 0030 0C37     		adds	r7, r7, #12
+ 280              		.cfi_def_cfa_offset 4
+ 281 0032 BD46     		mov	sp, r7
+ 282              		.cfi_def_cfa_register 13
+ 283              		@ sp needed
+ 284 0034 80BC     		pop	{r7}
+ 285              		.cfi_restore 7
+ 286              		.cfi_def_cfa_offset 0
+ 287 0036 7047     		bx	lr
+ 288              	.L16:
+ 289              		.align	2
+ 290              	.L15:
+ARM GAS  /tmp/ccVhC2yc.s 			page 7
+
+
+ 291 0038 00000000 		.word	uart_ethernet_tail
+ 292 003c 00000000 		.word	uart_ethernet_buffer
+ 293              		.cfi_endproc
+ 294              	.LFE68:
+ 296              		.section	.text.UART_Ethernet_BytesWrite,"ax",%progbits
+ 297              		.align	1
+ 298              		.global	UART_Ethernet_BytesWrite
+ 299              		.syntax unified
+ 300              		.thumb
+ 301              		.thumb_func
+ 303              	UART_Ethernet_BytesWrite:
+ 304              	.LFB69:
+  62:Core/Src/app_uart.c **** void UART_Ethernet_BytesWrite(uint8_t* data , uint16_t data_len){
+ 305              		.loc 1 62 65
+ 306              		.cfi_startproc
+ 307              		@ args = 0, pretend = 0, frame = 8
+ 308              		@ frame_needed = 1, uses_anonymous_args = 0
+ 309 0000 80B5     		push	{r7, lr}
+ 310              		.cfi_def_cfa_offset 8
+ 311              		.cfi_offset 7, -8
+ 312              		.cfi_offset 14, -4
+ 313 0002 82B0     		sub	sp, sp, #8
+ 314              		.cfi_def_cfa_offset 16
+ 315 0004 00AF     		add	r7, sp, #0
+ 316              		.cfi_def_cfa_register 7
+ 317 0006 7860     		str	r0, [r7, #4]
+ 318 0008 0B46     		mov	r3, r1
+ 319 000a 7B80     		strh	r3, [r7, #2]	@ movhi
+  63:Core/Src/app_uart.c **** 	while(!uart_ethernet_transmit_done_flag);
+ 320              		.loc 1 63 7
+ 321 000c 00BF     		nop
+ 322              	.L18:
+ 323              		.loc 1 63 8 discriminator 1
+ 324 000e 084B     		ldr	r3, .L19
+ 325 0010 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 326              		.loc 1 63 7 discriminator 1
+ 327 0012 002B     		cmp	r3, #0
+ 328 0014 FBD0     		beq	.L18
+  64:Core/Src/app_uart.c **** 	HAL_UART_Transmit_IT(&huart2, data, data_len);
+ 329              		.loc 1 64 2
+ 330 0016 7B88     		ldrh	r3, [r7, #2]
+ 331 0018 1A46     		mov	r2, r3
+ 332 001a 7968     		ldr	r1, [r7, #4]
+ 333 001c 0548     		ldr	r0, .L19+4
+ 334 001e FFF7FEFF 		bl	HAL_UART_Transmit_IT
+  65:Core/Src/app_uart.c **** 	uart_ethernet_transmit_done_flag = 0;
+ 335              		.loc 1 65 35
+ 336 0022 034B     		ldr	r3, .L19
+ 337 0024 0022     		movs	r2, #0
+ 338 0026 1A70     		strb	r2, [r3]
+  66:Core/Src/app_uart.c **** }
+ 339              		.loc 1 66 1
+ 340 0028 00BF     		nop
+ 341 002a 0837     		adds	r7, r7, #8
+ 342              		.cfi_def_cfa_offset 8
+ 343 002c BD46     		mov	sp, r7
+ 344              		.cfi_def_cfa_register 13
+ARM GAS  /tmp/ccVhC2yc.s 			page 8
+
+
+ 345              		@ sp needed
+ 346 002e 80BD     		pop	{r7, pc}
+ 347              	.L20:
+ 348              		.align	2
+ 349              	.L19:
+ 350 0030 00000000 		.word	uart_ethernet_transmit_done_flag
+ 351 0034 00000000 		.word	huart2
+ 352              		.cfi_endproc
+ 353              	.LFE69:
+ 355              		.section	.text.HAL_UART_RxCpltCallback,"ax",%progbits
+ 356              		.align	1
+ 357              		.global	HAL_UART_RxCpltCallback
+ 358              		.syntax unified
+ 359              		.thumb
+ 360              		.thumb_func
+ 362              	HAL_UART_RxCpltCallback:
+ 363              	.LFB70:
+  67:Core/Src/app_uart.c **** 
+  68:Core/Src/app_uart.c **** 
+  69:Core/Src/app_uart.c **** 
+  70:Core/Src/app_uart.c **** 
+  71:Core/Src/app_uart.c **** void HAL_UART_RxCpltCallback(UART_HandleTypeDef* uart){
+ 364              		.loc 1 71 55
+ 365              		.cfi_startproc
+ 366              		@ args = 0, pretend = 0, frame = 8
+ 367              		@ frame_needed = 1, uses_anonymous_args = 0
+ 368 0000 80B5     		push	{r7, lr}
+ 369              		.cfi_def_cfa_offset 8
+ 370              		.cfi_offset 7, -8
+ 371              		.cfi_offset 14, -4
+ 372 0002 82B0     		sub	sp, sp, #8
+ 373              		.cfi_def_cfa_offset 16
+ 374 0004 00AF     		add	r7, sp, #0
+ 375              		.cfi_def_cfa_register 7
+ 376 0006 7860     		str	r0, [r7, #4]
+  72:Core/Src/app_uart.c **** 	if(uart->Instance == USART2){
+ 377              		.loc 1 72 9
+ 378 0008 7B68     		ldr	r3, [r7, #4]
+ 379 000a 1B68     		ldr	r3, [r3]
+ 380              		.loc 1 72 4
+ 381 000c 0F4A     		ldr	r2, .L24
+ 382 000e 9342     		cmp	r3, r2
+ 383 0010 18D1     		bne	.L23
+  73:Core/Src/app_uart.c **** 		uart_ethernet_buffer[uart_ethernet_head] = uart_ethernet_interrupt_data;
+ 384              		.loc 1 73 23
+ 385 0012 0F4B     		ldr	r3, .L24+4
+ 386 0014 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 387 0016 1A46     		mov	r2, r3
+ 388              		.loc 1 73 44
+ 389 0018 0E4B     		ldr	r3, .L24+8
+ 390 001a 1978     		ldrb	r1, [r3]	@ zero_extendqisi2
+ 391 001c 0E4B     		ldr	r3, .L24+12
+ 392 001e 9954     		strb	r1, [r3, r2]
+  74:Core/Src/app_uart.c **** 		uart_ethernet_head = (uart_ethernet_head + 1) % UART_BUFFER_MAX;
+ 393              		.loc 1 74 44
+ 394 0020 0B4B     		ldr	r3, .L24+4
+ 395 0022 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ARM GAS  /tmp/ccVhC2yc.s 			page 9
+
+
+ 396 0024 0133     		adds	r3, r3, #1
+ 397              		.loc 1 74 49
+ 398 0026 5A42     		rsbs	r2, r3, #0
+ 399 0028 C3F30A03 		ubfx	r3, r3, #0, #11
+ 400 002c C2F30A02 		ubfx	r2, r2, #0, #11
+ 401 0030 58BF     		it	pl
+ 402 0032 5342     		rsbpl	r3, r2, #0
+ 403              		.loc 1 74 22
+ 404 0034 DAB2     		uxtb	r2, r3
+ 405 0036 064B     		ldr	r3, .L24+4
+ 406 0038 1A70     		strb	r2, [r3]
+  75:Core/Src/app_uart.c **** 		HAL_UART_Receive_IT(&huart2, &uart_ethernet_interrupt_data, 1);
+ 407              		.loc 1 75 3
+ 408 003a 0122     		movs	r2, #1
+ 409 003c 0549     		ldr	r1, .L24+8
+ 410 003e 0748     		ldr	r0, .L24+16
+ 411 0040 FFF7FEFF 		bl	HAL_UART_Receive_IT
+ 412              	.L23:
+  76:Core/Src/app_uart.c **** 	}
+  77:Core/Src/app_uart.c **** 
+  78:Core/Src/app_uart.c **** }
+ 413              		.loc 1 78 1
+ 414 0044 00BF     		nop
+ 415 0046 0837     		adds	r7, r7, #8
+ 416              		.cfi_def_cfa_offset 8
+ 417 0048 BD46     		mov	sp, r7
+ 418              		.cfi_def_cfa_register 13
+ 419              		@ sp needed
+ 420 004a 80BD     		pop	{r7, pc}
+ 421              	.L25:
+ 422              		.align	2
+ 423              	.L24:
+ 424 004c 00440040 		.word	1073759232
+ 425 0050 00000000 		.word	uart_ethernet_head
+ 426 0054 00000000 		.word	uart_ethernet_interrupt_data
+ 427 0058 00000000 		.word	uart_ethernet_buffer
+ 428 005c 00000000 		.word	huart2
+ 429              		.cfi_endproc
+ 430              	.LFE70:
+ 432              		.section	.text.HAL_UART_TxCpltCallback,"ax",%progbits
+ 433              		.align	1
+ 434              		.global	HAL_UART_TxCpltCallback
+ 435              		.syntax unified
+ 436              		.thumb
+ 437              		.thumb_func
+ 439              	HAL_UART_TxCpltCallback:
+ 440              	.LFB71:
+  79:Core/Src/app_uart.c **** 
+  80:Core/Src/app_uart.c **** 
+  81:Core/Src/app_uart.c **** void HAL_UART_TxCpltCallback(UART_HandleTypeDef *uart){
+ 441              		.loc 1 81 55
+ 442              		.cfi_startproc
+ 443              		@ args = 0, pretend = 0, frame = 8
+ 444              		@ frame_needed = 1, uses_anonymous_args = 0
+ 445              		@ link register save eliminated.
+ 446 0000 80B4     		push	{r7}
+ 447              		.cfi_def_cfa_offset 4
+ARM GAS  /tmp/ccVhC2yc.s 			page 10
+
+
+ 448              		.cfi_offset 7, -4
+ 449 0002 83B0     		sub	sp, sp, #12
+ 450              		.cfi_def_cfa_offset 16
+ 451 0004 00AF     		add	r7, sp, #0
+ 452              		.cfi_def_cfa_register 7
+ 453 0006 7860     		str	r0, [r7, #4]
+  82:Core/Src/app_uart.c **** 	if(uart->Instance == USART2){
+ 454              		.loc 1 82 9
+ 455 0008 7B68     		ldr	r3, [r7, #4]
+ 456 000a 1B68     		ldr	r3, [r3]
+ 457              		.loc 1 82 4
+ 458 000c 054A     		ldr	r2, .L29
+ 459 000e 9342     		cmp	r3, r2
+ 460 0010 02D1     		bne	.L28
+  83:Core/Src/app_uart.c **** 		uart_ethernet_transmit_done_flag = 1;
+ 461              		.loc 1 83 36
+ 462 0012 054B     		ldr	r3, .L29+4
+ 463 0014 0122     		movs	r2, #1
+ 464 0016 1A70     		strb	r2, [r3]
+ 465              	.L28:
+  84:Core/Src/app_uart.c **** 	}
+  85:Core/Src/app_uart.c **** }
+ 466              		.loc 1 85 1
+ 467 0018 00BF     		nop
+ 468 001a 0C37     		adds	r7, r7, #12
+ 469              		.cfi_def_cfa_offset 4
+ 470 001c BD46     		mov	sp, r7
+ 471              		.cfi_def_cfa_register 13
+ 472              		@ sp needed
+ 473 001e 80BC     		pop	{r7}
+ 474              		.cfi_restore 7
+ 475              		.cfi_def_cfa_offset 0
+ 476 0020 7047     		bx	lr
+ 477              	.L30:
+ 478 0022 00BF     		.align	2
+ 479              	.L29:
+ 480 0024 00440040 		.word	1073759232
+ 481 0028 00000000 		.word	uart_ethernet_transmit_done_flag
+ 482              		.cfi_endproc
+ 483              	.LFE71:
+ 485              		.text
+ 486              	.Letext0:
+ 487              		.file 2 "/opt/st/stm32cubeide_1.10.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-
+ 488              		.file 3 "/opt/st/stm32cubeide_1.10.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-
+ 489              		.file 4 "Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f103xe.h"
+ 490              		.file 5 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_def.h"
+ 491              		.file 6 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_dma.h"
+ 492              		.file 7 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h"
+ 493              		.file 8 "Core/Inc/main.h"
+ARM GAS  /tmp/ccVhC2yc.s 			page 11
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 app_uart.c
+     /tmp/ccVhC2yc.s:22     .bss.huart1:0000000000000000 huart1
+     /tmp/ccVhC2yc.s:19     .bss.huart1:0000000000000000 $d
+     /tmp/ccVhC2yc.s:29     .bss.huart2:0000000000000000 huart2
+     /tmp/ccVhC2yc.s:26     .bss.huart2:0000000000000000 $d
+     /tmp/ccVhC2yc.s:34     .bss.uart_ethernet_interrupt_data:0000000000000000 uart_ethernet_interrupt_data
+     /tmp/ccVhC2yc.s:35     .bss.uart_ethernet_interrupt_data:0000000000000000 $d
+     /tmp/ccVhC2yc.s:37     .bss.uart_ethernet_buffer:0000000000000000 $d
+     /tmp/ccVhC2yc.s:40     .bss.uart_ethernet_buffer:0000000000000000 uart_ethernet_buffer
+     /tmp/ccVhC2yc.s:45     .bss.uart_ethernet_head:0000000000000000 uart_ethernet_head
+     /tmp/ccVhC2yc.s:46     .bss.uart_ethernet_head:0000000000000000 $d
+     /tmp/ccVhC2yc.s:50     .bss.uart_ethernet_tail:0000000000000000 uart_ethernet_tail
+     /tmp/ccVhC2yc.s:51     .bss.uart_ethernet_tail:0000000000000000 $d
+     /tmp/ccVhC2yc.s:55     .data.uart_ethernet_transmit_done_flag:0000000000000000 uart_ethernet_transmit_done_flag
+     /tmp/ccVhC2yc.s:58     .text.UART_Init:0000000000000000 $t
+     /tmp/ccVhC2yc.s:64     .text.UART_Init:0000000000000000 UART_Init
+     /tmp/ccVhC2yc.s:130    .text.UART_Init:0000000000000054 $d
+     /tmp/ccVhC2yc.s:137    .text.UART_Logger_BytesWrite:0000000000000000 $t
+     /tmp/ccVhC2yc.s:143    .text.UART_Logger_BytesWrite:0000000000000000 UART_Logger_BytesWrite
+     /tmp/ccVhC2yc.s:177    .text.UART_Logger_BytesWrite:0000000000000020 $d
+     /tmp/ccVhC2yc.s:182    .text.UART_Ethernet_isAvailable:0000000000000000 $t
+     /tmp/ccVhC2yc.s:188    .text.UART_Ethernet_isAvailable:0000000000000000 UART_Ethernet_isAvailable
+     /tmp/ccVhC2yc.s:227    .text.UART_Ethernet_isAvailable:0000000000000020 $d
+     /tmp/ccVhC2yc.s:233    .text.UART_Ethernet_ByteRead:0000000000000000 $t
+     /tmp/ccVhC2yc.s:239    .text.UART_Ethernet_ByteRead:0000000000000000 UART_Ethernet_ByteRead
+     /tmp/ccVhC2yc.s:291    .text.UART_Ethernet_ByteRead:0000000000000038 $d
+     /tmp/ccVhC2yc.s:297    .text.UART_Ethernet_BytesWrite:0000000000000000 $t
+     /tmp/ccVhC2yc.s:303    .text.UART_Ethernet_BytesWrite:0000000000000000 UART_Ethernet_BytesWrite
+     /tmp/ccVhC2yc.s:350    .text.UART_Ethernet_BytesWrite:0000000000000030 $d
+     /tmp/ccVhC2yc.s:356    .text.HAL_UART_RxCpltCallback:0000000000000000 $t
+     /tmp/ccVhC2yc.s:362    .text.HAL_UART_RxCpltCallback:0000000000000000 HAL_UART_RxCpltCallback
+     /tmp/ccVhC2yc.s:424    .text.HAL_UART_RxCpltCallback:000000000000004c $d
+     /tmp/ccVhC2yc.s:433    .text.HAL_UART_TxCpltCallback:0000000000000000 $t
+     /tmp/ccVhC2yc.s:439    .text.HAL_UART_TxCpltCallback:0000000000000000 HAL_UART_TxCpltCallback
+     /tmp/ccVhC2yc.s:480    .text.HAL_UART_TxCpltCallback:0000000000000024 $d
+                           .group:0000000000000000 wm4.0.06d673f17b3774aa7c18073a6cbf2f9a
+                           .group:0000000000000000 wm4.stm32f1xx_hal_conf.h.22.e8a44c2127afc730ae3c2427a61800bf
+                           .group:0000000000000000 wm4.stm32f1xx.h.39.208bb8a61c892b7c37d899c49a031330
+                           .group:0000000000000000 wm4.stm32f103xe.h.38.4f78f3a072dc4f9355fc3df8c7b1beeb
+                           .group:0000000000000000 wm4._newlib_version.h.4.bfdf54b0af045d4a71376ae00f63a22c
+                           .group:0000000000000000 wm4.features.h.33.318b64d71e0957639cfb30f1db1f7ec8
+                           .group:0000000000000000 wm4._default_types.h.15.247e5cd201eca3442cbf5404108c4935
+                           .group:0000000000000000 wm4._intsup.h.10.48bafbb683905c4daa4565a85aeeb264
+                           .group:0000000000000000 wm4._stdint.h.10.c24fa3af3bc1706662bb5593a907e841
+                           .group:0000000000000000 wm4.stdint.h.23.d53047a68f4a85177f80b422d52785ed
+                           .group:0000000000000000 wm4.cmsis_version.h.32.4d5822004c01a829a975260e854b5f8e
+                           .group:0000000000000000 wm4.core_cm3.h.66.fc46cac19810db8f98d67da7ef88f42c
+                           .group:0000000000000000 wm4.cmsis_gcc.h.26.4f5798e999d5690b80e6ded3ecc94b37
+                           .group:0000000000000000 wm4.core_cm3.h.127.f4474120f1a7524deb56f9d74ff175da
+                           .group:0000000000000000 wm4.stm32f103xe.h.725.9a96d0161f2d027636715e1ecf40f574
+                           .group:0000000000000000 wm4.stm32f1xx.h.162.96b09079a093c34dbd7f0b85cbd0ddee
+                           .group:0000000000000000 wm4.stm32_hal_legacy.h.23.91ba5b544a4c2be2620a1e7ff0049e10
+                           .group:0000000000000000 wm4.stddef.h.39.144cf5ddcd53cbfdac30259dc1a6c87f
+                           .group:0000000000000000 wm4.stm32f1xx_hal_def.h.57.18d01ce1aa74e9fb44dbf16f821a574a
+                           .group:0000000000000000 wm4.stm32f1xx_hal_rcc.h.95.21591bbc513aaa813c0b8640c3b32517
+                           .group:0000000000000000 wm4.stm32f1xx_hal_rcc_ex.h.22.66c7d13818747b107e10421a4fd8120c
+ARM GAS  /tmp/ccVhC2yc.s 			page 12
+
+
+                           .group:0000000000000000 wm4.stm32f1xx_hal_rcc.h.1202.f8e5f9e0cf4eef7840facf5396029056
+                           .group:0000000000000000 wm4.stm32f1xx_hal_gpio.h.22.fa638d688dcc57ca806fe6a7831b0d04
+                           .group:0000000000000000 wm4.stm32f1xx_hal_gpio_ex.h.22.e3c24d30e9ab98ab5b1c7af6d8871c08
+                           .group:0000000000000000 wm4.stm32f1xx_hal_gpio.h.263.f5ebf2f545ade59412ab9261c8e35dc4
+                           .group:0000000000000000 wm4.stm32f1xx_hal_exti.h.22.29f568b08faa2fc4cf934d8ccc8e2874
+                           .group:0000000000000000 wm4.stm32f1xx_hal_dma.h.22.3c14338534886827bf3aeaa2a7f412a1
+                           .group:0000000000000000 wm4.stm32f1xx_hal_dma_ex.h.22.438e1362150b97592782187e6bf5da53
+                           .group:0000000000000000 wm4.stm32f1xx_hal_dma.h.409.cafcd2cfe701091535636be537c18293
+                           .group:0000000000000000 wm4.stm32f1xx_hal_cortex.h.22.b5f4174bb6a50d95405567b8f50e0900
+                           .group:0000000000000000 wm4.stm32f1xx_hal_flash.h.22.5cea9a7210e6315b41724b47b5fdf203
+                           .group:0000000000000000 wm4.stm32f1xx_hal_flash_ex.h.22.af08998ffc014feb1391660ffb6139fe
+                           .group:0000000000000000 wm4.stm32f1xx_hal_pwr.h.22.3438c476faafc3240bf146f143df3fcd
+                           .group:0000000000000000 wm4.stm32f1xx_hal_uart.h.22.5f7992e497faa36aa98f09f7214f4dbb
+                           .group:0000000000000000 wm4.stm32f1xx_hal.h.88.ae5c4f2e83348980a1011c2a2ef54956
+
+UNDEFINED SYMBOLS
+HAL_UART_Init
+Error_Handler
+HAL_UART_Receive_IT
+HAL_UART_Transmit
+HAL_UART_Transmit_IT
